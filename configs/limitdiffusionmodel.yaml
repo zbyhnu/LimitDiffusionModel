@@ -1,0 +1,82 @@
+model:
+  target: models.limitdiffusionmodel.LimitDiffusionModel
+  params:
+    linear_start: 0.00085
+    linear_end: 0.0120
+    num_timesteps_cond: 1
+    log_every_t: 200
+    timesteps: 50
+    first_stage_key: "jpg"
+    cond_stage_key: "jpg"
+    image_size: 512
+    channels: 3
+    cond_stage_trainable: false
+    conditioning_key: crossattn
+    monitor: val/loss_simple_ema
+    scale_factor: 0.18215
+    use_ema: False
+    mode: limit
+
+    local_limit_config:
+      target: models.local_limiter.LocalLimiter
+      params:
+        in_channels: 4
+        model_channels: 512
+        local_channels: 21
+        inject_channels: [192, 256, 384, 512]
+        inject_layers: [1, 4, 7, 10]
+        num_res_blocks: 2
+        attention_resolutions: [4, 2, 1]
+        channel_mult: [1, 2, 4, 4]
+        use_checkpoint: True
+        num_heads: 8
+        use_spatial_transformer: True
+        transformer_depth: 1
+        context_dim: 768
+        legacy: False
+    
+    global_limiter_config:
+      target: models.global_limiter.GlobalLimiter
+      params:
+        in_dim: 768
+        channel_mult: [2, 4]
+
+    unet_config:
+      target: models.local_limiter.LocalLimiterLDM
+      params:
+        image_size: 512
+        in_channels: 4
+        model_channels: 320
+        out_channels: 4
+        num_res_blocks: 2
+        attention_resolutions: [4, 2, 1]
+        channel_mult: [1, 2, 4, 4]
+        use_checkpoint: True
+        num_heads: 8
+        use_spatial_transformer: True
+        transformer_depth: 1
+        context_dim: 768
+        legacy: False
+
+    first_stage_config:
+      target: ldm.models.autoencoder.AutoencoderKL
+      params:
+        embed_dim: 4
+        monitor: val/rec_loss
+        ddconfig:
+          double_z: true
+          z_channels: 4
+          resolution: 512
+          in_channels: 3
+          out_ch: 3
+          ch: 128
+          ch_mult:
+          - 1
+          - 2
+          - 4
+          - 4
+          num_res_blocks: 2
+          attn_resolutions: []
+          dropout: 0.0
+        lossconfig:
+          target: torch.nn.Identity
