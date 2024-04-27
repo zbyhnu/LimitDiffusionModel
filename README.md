@@ -4,6 +4,6 @@ Model: LimitDiffusionModel(LDN) = RapidDiffusionProbabilisticModel(RDPM) + Local
 
 ![contents](./LDM.PNG)
 
-![contents](./model/locallimiter.PNG)
+![contents](./locallimiter.PNG)
 
 ![contents](./result.PNG)
