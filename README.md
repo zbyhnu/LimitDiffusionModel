@@ -2,8 +2,8 @@ Title: Minutia Reconstruction in Sonar Images with Diffusion Probabilistic Model
 
 Model: LimitDiffusionModel(LDN) = RapidDiffusionProbabilisticModel(RDPM) + LocalLimiter + GlobalLimiter
 
-![contents](./model/LDM.pdf)
+![contents](./LDM.PNG)
 
-![contents](./model/local-limiter.pdf)
+![contents](./model/locallimiter.PNG)
 
-![contents](./model/result-CSD.pdf)
+![contents](./result.PNG)
